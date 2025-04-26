@@ -22,10 +22,11 @@ Follow these steps to run the application:
 
    ```
    MONGODB_URI=your_database_connection_string
+   TEST_MONGODB_URI=your_database_connection_string_for_tests
    PORT=3001
    ```
 
-   `MONGODB_URI` defines the database connection url and `PORT` defines the port on which the application will be started.
+   `MONGODB_URI` defines the database connection url. `TEST_MONGODB_URI` defines the database connection url for tests and it will be needed on branch part4-2 onwards. `PORT` defines the port on which the application will be started.
 
 6. Start the application with the command `npm run dev`. By default, the application will start on port 3001, so it will be available at http://localhost:3001/.
 
