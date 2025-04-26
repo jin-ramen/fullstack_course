@@ -22,15 +22,15 @@ describe('when there is initially some notes saved', () => {
   })
 
   test('all notes are returned', async () => {
-    const notes = await helper.notesInDb()
+    const response = await api.get('/api/notes')
 
-    assert.strictEqual(notes.length, helper.initialNotes.length)
+    assert.strictEqual(response.body.length, helper.initialNotes.length)
   })
 
   test('a specific note is within the returned notes', async () => {
-    const notes = await helper.notesInDb()
+    const response = await api.get('/api/notes')
 
-    const contents = notes.map((n) => n.content)
+    const contents = response.body.map((e) => e.content)
     assert(contents.includes('HTML is easy'))
   })
 
