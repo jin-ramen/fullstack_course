@@ -14,7 +14,7 @@ mongoose.connect(url)
 
 const noteSchema = new mongoose.Schema({
   content: String,
-  important: Boolean,
+  important: Boolean
 })
 
 const Note = mongoose.model('Note', noteSchema)
@@ -29,8 +29,8 @@ const Note = mongoose.model('Note', noteSchema)
 // //   mongoose.connection.close()
 // // })
 
-Note.find({}).then((result) => {
-  result.forEach((note) => {
+Note.find({}).then(result => {
+  result.forEach(note => {
     console.log(note)
   })
   mongoose.connection.close()
