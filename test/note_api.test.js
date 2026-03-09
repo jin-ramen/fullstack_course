@@ -14,8 +14,8 @@ const User = require('../models/user')
 const api = supertest(app)
 
 beforeEach(async () => {
-    await Note.deleteMany({})
-    await Note.insertMany(helper.initialNotes)
+  await Note.deleteMany({})
+  await Note.insertMany(helper.initialNotes)
 })
 
 test('notes are returned as json', async () => {
@@ -39,13 +39,15 @@ test('a specific note is within the returned notes', async () => {
 })
 
 test('a specific note can be viewed', async () => {
-    const noteAtStart = await helper.notesInDb()
-    const noteToView = noteAtStart[0]
+  const noteAtStart = await helper.notesInDb()
+  const noteToView = noteAtStart[0]
 
-    const resultNote = await api
-        .get(`/api/notes/${noteToView.id}`)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
+  const resultNote = await api
+    .get(`/api/notes/${noteToView.id}`)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  // console.log(resultNote)
+  assert.equal(resultNote.body.content, 'HTML is easy')
 })
 
 test('a note can be deleted', async () => {
@@ -111,24 +113,25 @@ describe.only('when there is initially one user in db', () => {
       .send(newUser)
       .expect(400)
       .expect('Content-Type', /application\/json/)
-    
-      const userAtEnd = await helper.usersInDB()
-      assert(result.body.error.includes('expected `username` to be unique'))
 
-      assert.strictEqual(userAtEnd.length, userAtStart.length)
+    const userAtEnd = await helper.usersInDB()
+    assert(result.body.error.includes('expected `username` to be unique'))
+
+    assert.strictEqual(userAtEnd.length, userAtStart.length)
   })
 
   test('a valid note can be added ', async () => {
-    const userAtStart = await helper.usersInDB()
-    const userIds = userAtStart.map(user => user.id)
+    const token = await helper.getToken('root')
+    assert(token, 'token should exist')
+
     const newNote = {
       content: 'async/await simplifies making async calls',
       important: true,
-      userId: userIds[0]
     }
 
     await api
       .post('/api/notes')
+      .set('Authorization', `Bearer ${token}`)
       .send(newNote)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -141,6 +144,8 @@ describe.only('when there is initially one user in db', () => {
   })
 
   test('note without content is not added', async () => {
+    const token = await helper.getToken('root')
+
     const newNote = {
       important: true,
       userId: helper.getUserId()
@@ -148,8 +153,10 @@ describe.only('when there is initially one user in db', () => {
 
     await api
       .post('/api/notes')
+      .set('Authorization', `Bearer ${token}`)
       .send(newNote)
       .expect(400)
+      .expect('Content-Type', /application\/json/)
 
     const notesAtEnd = await helper.notesInDb()
 
